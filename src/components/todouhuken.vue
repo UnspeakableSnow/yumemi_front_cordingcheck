@@ -1,52 +1,66 @@
-<script setup lang="ts">
-</script>
-
 <template>
   <h1>都道府県を選択</h1>
-  <div id="bottoms"></div>
+  <div id="buttons"></div>
 </template>
 
 <script lang="ts">
 var headers = new Headers();
-headers.set("X-API-KEY", "tHo6JXy8vlNO6dBUCtXp3hgcTqN19CQXpot93nCa")
-headers.set("Accept", "application/json")
-headers.set("Content-Type", "application/json;charset=utf-8")
-
-function get_todouhuken_data(id: number){
-  fetch('https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?prefCode=11', {headers})
-    .then(response => response.json())
-    .then(data => console.log(data["result"]))
-    .catch(error => console.error('Error:', error));
-  return id;
-}
+headers.set("X-API-KEY", "tHo6JXy8vlNO6dBUCtXp3hgcTqN19CQXpot93nCa");
+headers.set("Accept", "application/json");
+headers.set("Content-Type", "application/json;charset=utf-8");
 
 // window.addEventListener('DOMContentLoaded', function() {
-mounted:()=>{
-  fetch('https://opendata.resas-portal.go.jp/api/v1/prefectures', {headers})
-  .then(response => response.json())
-  .then(json_data => {
-    json_data = json_data["result"];
-    json_data.forEach(data => {
-      console.log(data);
-      let bottom_box = document.createElement("div");
-      bottom_box.setAttribute("class","bottom_box")
-      document.getElementById("bottoms").appendChild(bottom_box);
-      
-      let bottom = document.createElement("input");
-      bottom.setAttribute("type","checkbox");
-      bottom.setAttribute("value",String(data["prefCode"]));
-      let bottom_label = document.createElement("label");
-      bottom_label.innerHTML = data["prefName"];
-      bottom_box.appendChild(bottom);
-      bottom_box.appendChild(bottom_label);
+export default {
+  name: "todouhuken",
+  data(){
+    return{
+      todouhukens: []
+    }
+  },
+  mounted(){
+    this.get_todouhuken_itiran();
+  },
+  methods: {
+    get_todouhuken_data(id: number){
+      fetch(`https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?prefCode=${id}`, {headers})
+        .then(response => response.json())
+        .then(data => {
+          // console.log(data["result"]["data"]);
+          this.$emit('upData', [this.todouhukens[id-1], data["result"]["data"]]);
+        })
+        .catch(error => console.error('Error:', error));
+    },
+    get_todouhuken_itiran(){
+      fetch('https://opendata.resas-portal.go.jp/api/v1/prefectures', {headers})
+      .then(response => response.json())
+      .then(json_data => {
+        json_data = json_data["result"];
+        json_data.forEach((data: { [x: string]: string; }) => {
+          this.todouhukens.push(data["prefName"]);
 
-      bottom.addEventListener("change",()=>{
-        if(bottom.checked){}
-        console.log(bottom.value)
+          let button_box = document.createElement("div");
+          button_box.setAttribute("class","button_box")
+          document.getElementById("buttons").appendChild(button_box);
+          
+          let button = document.createElement("input");
+          button.setAttribute("type","checkbox");
+          button.setAttribute("value",String(data["prefCode"]));
+          let button_label = document.createElement("label");
+          button_label.innerHTML = data["prefName"];
+          button_box.appendChild(button);
+          button_box.appendChild(button_label);
+
+          button.addEventListener("change",()=>{
+            if(button.checked){
+              this.get_todouhuken_data(Number(button.value))
+            }
+            else{
+            }
+          })
+        });
       })
-    });
-  })
-  .catch(error => console.error('Error:', error));
+      .catch(error => console.error('Error:', error));}
+  },
 }
 </script>
 
@@ -54,12 +68,12 @@ mounted:()=>{
 h1 {
   font-size: 2.6rem;
 }
-#bottoms{
+#buttons{
   /* display: flex; */
   border:3px solid #000;
 }
-.bottom_box{
-  display: flex;
+.button_box{
+  display: inline;
   border:1px solid #00f;
 }
 </style>
