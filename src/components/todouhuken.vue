@@ -1,15 +1,16 @@
+<!-- 都道府県入力フォーム -->
 <template>
   <h1>都道府県を選択</h1>
   <div id="buttons"></div>
 </template>
 
 <script lang="ts">
+// APIキーなど共通ヘッダ
 var headers = new Headers();
 headers.set("X-API-KEY", "tHo6JXy8vlNO6dBUCtXp3hgcTqN19CQXpot93nCa");
 headers.set("Accept", "application/json");
 headers.set("Content-Type", "application/json;charset=utf-8");
 
-// window.addEventListener('DOMContentLoaded', function() {
 export default {
   name: "todouhuken",
   data(){
@@ -17,19 +18,22 @@ export default {
       todouhukens: []
     }
   },
+  emits: ['upData', 'delData'],
   mounted(){
     this.get_todouhuken_itiran();
   },
   methods: {
-    get_todouhuken_data(id: number){
-      fetch(`https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?prefCode=${id}`, {headers})
+    // 都道府県コードに対応した人口構成データを持ってきて送る
+    get_todouhuken_data(code: number){
+      fetch(`https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?prefCode=${code}`, {headers})
         .then(response => response.json())
         .then(data => {
           // console.log(data["result"]["data"]);
-          this.$emit('upData', [this.todouhukens[id-1], data["result"]["data"]]);
+          this.$emit('upData', [this.todouhukens[code-1], data["result"]["data"]]);
         })
         .catch(error => console.error('Error:', error));
     },
+    // 都道府県と都道府県コードを持ってきてフォームを作る
     get_todouhuken_itiran(){
       fetch('https://opendata.resas-portal.go.jp/api/v1/prefectures', {headers})
       .then(response => response.json())
@@ -42,19 +46,21 @@ export default {
           button_box.setAttribute("class","button_box")
           document.getElementById("buttons").appendChild(button_box);
           
+          let button_label = document.createElement("label");
+          button_label.innerHTML = data["prefName"];
           let button = document.createElement("input");
           button.setAttribute("type","checkbox");
           button.setAttribute("value",String(data["prefCode"]));
-          let button_label = document.createElement("label");
-          button_label.innerHTML = data["prefName"];
-          button_box.appendChild(button);
           button_box.appendChild(button_label);
+          button_label.appendChild(button);
 
           button.addEventListener("change",()=>{
             if(button.checked){
               this.get_todouhuken_data(Number(button.value))
             }
             else{
+              // 除外をApp.vueに送る
+              this.$emit('delData', this.todouhukens[Number(button.value)-1]);
             }
           })
         });
@@ -67,13 +73,24 @@ export default {
 <style scoped>
 h1 {
   font-size: 2.6rem;
+  padding-left: 5px;
+  border-left: solid 10px #747;
+  border-top: solid 10px #7470;
+  border-bottom: double 10px #747;
+  border-right: solid 10px #7470;
 }
 #buttons{
-  /* display: flex; */
-  border:3px solid #000;
+  padding:5px;
+  display: flex;
+  flex-wrap: wrap;
+  border:3px dotted #0007;
 }
-.button_box{
-  display: inline;
-  border:1px solid #00f;
+@media (max-width: 450px) {
+  h1{
+    font-size:1.5em;
+  }
+  label{
+    font-size: 8px;
+  }
 }
 </style>
