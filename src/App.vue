@@ -5,6 +5,7 @@
     <display_mode_form @upDispmode="getDispmode"/>
   </header>
   <main>
+    <!-- あくまで主要素はグラフ -->
     <view_graph :datas="datas" :dismode="display_mode" :key="resetKey"/>
   </main>
 </template>
@@ -14,6 +15,7 @@ import todouhuken from './components/todouhuken.vue'
 import view_graph from './components/view_graph.vue'
 import display_mode_form from './components/display_mode_form.vue'
 
+// anyは全vueファイル内に7つ...(´pωq｀)
 export default {
   name: "App",
   components: {
@@ -30,7 +32,6 @@ export default {
   },
   methods: {
     getDatas(data: any) {
-      // console.log(data);
       var push_frag=true;
       this.datas.forEach((raw: any[])=>{
         // 同じのがないならpushしてよし
@@ -42,7 +43,6 @@ export default {
       this.resetKey++;
     },
     delDatas(code: number) {
-      // console.log(code);
       var data_index=-1;
       for(let i=0;i<this.datas.length;i++){
         if(this.datas[i][0]==code)
@@ -54,7 +54,6 @@ export default {
       this.resetKey++;
     },
     getDispmode(mode: number){
-      // console.log(mode);
       this.display_mode=mode;
       this.resetKey++;
     }

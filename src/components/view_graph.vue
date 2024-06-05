@@ -1,6 +1,7 @@
 <!-- グラフを描く -->
 <template>
-  <canvas id="testCanvas" width="1000" height="500"/>
+  <p>※2020年以降は予測値</p>
+  <canvas id="Canvas" width="1000" height="500"/>
 </template>
 
 <script lang="ts">
@@ -10,7 +11,7 @@ export default {
   name: "view_graph",
   props: ["datas","dismode"],
   mounted(){
-    var canvas = <HTMLCanvasElement> document.getElementById( "testCanvas" );
+    var canvas = <HTMLCanvasElement> document.getElementById( "Canvas" );
     if(canvas!=null){
       var context = <CanvasRenderingContext2D> canvas.getContext( "2d" );
       // データがないなら描かない

@@ -1,12 +1,14 @@
 <!-- 都道府県入力フォーム -->
 <template>
   <h1>都道府県を選択</h1>
+  <!-- buttonsは複数あることが異常なのでidでいいと思っている -->
   <div id="buttons"></div>
 </template>
 
 <script lang="ts">
 // APIキーなど共通ヘッダ
 var headers = new Headers();
+// APIキーが使われ放題？んなもんくれてやらぁ！
 headers.set("X-API-KEY", "tHo6JXy8vlNO6dBUCtXp3hgcTqN19CQXpot93nCa");
 headers.set("Accept", "application/json");
 headers.set("Content-Type", "application/json;charset=utf-8");
@@ -24,7 +26,6 @@ export default {
       fetch(`https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?prefCode=${code}`, {headers})
         .then(response => response.json())
         .then(data => {
-          // console.log(data["result"]["data"]);
           this.$emit('upData', [todouhukens[code-1], data["result"]["data"]]);
         })
         .catch(error => console.error('Error:', error));
