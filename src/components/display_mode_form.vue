@@ -14,8 +14,8 @@ export default {
   name: "display_mode_form",
   emits: ['upDispmode'],
   mounted(){
-    var display_mode_form = document.getElementById("display_mode_form");
-    var display_mode_buttons = document.getElementsByName("display_mode");
+    var display_mode_form = <HTMLInputElement> document.getElementById("display_mode_form");
+    var display_mode_buttons = <NodeListOf<HTMLInputElement>> document.getElementsByName("display_mode");
     // ラジオボタンの値を送信
     display_mode_form.addEventListener("change",()=>{
       for (let i=0; i<display_mode_buttons.length; i++){

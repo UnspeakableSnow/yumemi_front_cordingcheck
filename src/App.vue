@@ -23,7 +23,7 @@ export default {
   },
   data(){
     return{
-      datas: [],  // データ集合[ [ "県名", [各データ] ] ]
+      datas: Array(),  // データ集合[ [ "県名", [各データ] ] ]
       resetKey: 0,  // view_graph更新キー
       display_mode: 0  // 表示するデータ（総人口とか）
     }
@@ -32,7 +32,7 @@ export default {
     getDatas(data: any) {
       // console.log(data);
       var push_frag=true;
-      this.datas.forEach(raw=>{
+      this.datas.forEach((raw: any[])=>{
         // 同じのがないならpushしてよし
         if(raw[0]==data[0])
           push_frag=false;

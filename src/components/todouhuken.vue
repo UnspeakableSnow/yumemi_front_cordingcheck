@@ -11,13 +11,9 @@ headers.set("X-API-KEY", "tHo6JXy8vlNO6dBUCtXp3hgcTqN19CQXpot93nCa");
 headers.set("Accept", "application/json");
 headers.set("Content-Type", "application/json;charset=utf-8");
 
+var todouhukens: { [x: string]: any; } = [];
 export default {
   name: "todouhuken",
-  data(){
-    return{
-      todouhukens: []
-    }
-  },
   emits: ['upData', 'delData'],
   mounted(){
     this.get_todouhuken_itiran();
@@ -29,7 +25,7 @@ export default {
         .then(response => response.json())
         .then(data => {
           // console.log(data["result"]["data"]);
-          this.$emit('upData', [this.todouhukens[code-1], data["result"]["data"]]);
+          this.$emit('upData', [todouhukens[code-1], data["result"]["data"]]);
         })
         .catch(error => console.error('Error:', error));
     },
@@ -38,13 +34,14 @@ export default {
       fetch('https://opendata.resas-portal.go.jp/api/v1/prefectures', {headers})
       .then(response => response.json())
       .then(json_data => {
+        var buttons = <HTMLCanvasElement> document.getElementById("buttons");
         json_data = json_data["result"];
         json_data.forEach((data: { [x: string]: string; }) => {
-          this.todouhukens.push(data["prefName"]);
+          todouhukens.push(data["prefName"]);
 
           let button_box = document.createElement("div");
-          button_box.setAttribute("class","button_box")
-          document.getElementById("buttons").appendChild(button_box);
+          button_box.setAttribute("class","button_box");
+          buttons.appendChild(button_box);
           
           let button_label = document.createElement("label");
           button_label.innerHTML = data["prefName"];
@@ -60,7 +57,7 @@ export default {
             }
             else{
               // 除外をApp.vueに送る
-              this.$emit('delData', this.todouhukens[Number(button.value)-1]);
+              this.$emit('delData', todouhukens[Number(button.value)-1]);
             }
           })
         });
